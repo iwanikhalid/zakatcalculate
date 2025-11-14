@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8" />
+  <title>Kalkulator Zakat Ternakan (Ringkas)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --primary: #145c3a;
+      --primary-soft: #e3f3ea;
+      --danger: #b32121;
+      --bg: #f5f5f5;
+      --text: #222;
+      --border-radius: 12px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      padding: 1.25rem;
+    }
+
+    .calculator-wrapper {
+      max-width: 600px;
+      margin: 0 auto;
+      background: #fff;
+      border-radius: var(--border-radius);
+      padding: 1.5rem 1.25rem;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.06);
+    }
+
+    @media (min-width: 640px) {
+      .calculator-wrapper {
+        padding: 2rem 2rem;
+      }
+    }
+
+    h1 {
+      font-size: 1.4rem;
+      margin: 0 0 0.75rem;
+      color: var(--primary);
+    }
+
+    .subtitle {
+      font-size: 0.95rem;
+      margin-bottom: 1.25rem;
+      color: #555;
+    }
+
+    label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 0.4rem;
+      font-size: 0.95rem;
+    }
+
+    .helper-text {
+      font-size: 0.85rem;
+      color: #666;
+      margin-bottom: 0.8rem;
+    }
+
+    select,
+    input[type="number"] {
+      width: 100%;
+      padding: 0.6rem 0.7rem;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 1rem;
+      outline: none;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+      margin-bottom: 0.75rem;
+    }
+
+    select:focus,
+    input[type="number"]:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(20, 92, 58, 0.15);
+    }
+
+    button {
+      width: 100%;
+      margin-top: 0.4rem;
+      padding: 0.7rem;
+      border-radius: 999px;
+      border: none;
+      background: var(--primary);
+      color: #fff;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.08s ease, box-shadow 0.08s ease,
+        background 0.2s ease;
+    }
+
+    button:hover {
+      background: #0e4029;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+      transform: translateY(-1px);
+    }
+
+    button:active {
+      transform: translateY(0);
+      box-shadow: none;
+    }
+
+    .result-box {
+      margin-top: 1.4rem;
+      padding: 0.8rem 0.9rem;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      display: none;
+    }
+
+    .result-box.success {
+      background: #ecfdf3;
+      border: 1px solid #16a34a;
+      color: #166534;
+    }
+
+    .result-box.error {
+      background: #fef2f2;
+      border: 1px solid var(--danger);
+      color: #7f1d1d;
+    }
+
+    .result-title {
+      font-weight: 700;
+      margin-bottom: 0.25rem;
+    }
+
+    .result-amount {
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-top: 0.4rem;
+    }
+
+    .nisab-info {
+      margin-top: 1rem;
+      background: var(--primary-soft);
+      border-radius: 10px;
+      padding: 0.8rem 0.9rem;
+      font-size: 0.9rem;
+      border-left: 4px solid var(--primary);
+    }
+
+    .nisab-info ul {
+      margin: 0.35rem 0 0;
+      padding-left: 1.1rem;
+    }
+  </style>
+</head>
+<body>
+<nav>
+  <a href="kripto.html">Kripto</a> |
+  <a href="ternakan.html">Ternakan</a> |
+  <a href="padi.html">Padi</a> 
+</nav>
+  <div class="calculator-wrapper">
+    <h1>Kalkulator Zakat Ternakan (Ringkas)</h1>
+    <p class="subtitle">
+      Kira secara mudah sama ada ternakan anda cukup nisab dan berapa bilangan
+      haiwan (dan nilai anggaran RM) yang perlu dizakatkan.
+    </p>
+
+    <form id="zakatTernakanForm">
+      <label for="animalType">Jenis ternakan</label>
+      <select id="animalType" name="animalType">
+        <option value="kambing">Kambing / Biri-biri</option>
+        <option value="lembu">Lembu / Kerbau</option>
+        <option value="unta">Unta</option>
+      </select>
+
+      <label for="animalCount">Bilangan ternakan yang dimiliki (ekor)</label>
+      <p class="helper-text">
+        Jumlah ekor yang dimiliki secara milik sempurna dan dipelihara sepanjang
+        1 haul (1 tahun qamariyah).
+      </p>
+      <input
+        type="number"
+        id="animalCount"
+        name="animalCount"
+        min="0"
+        step="1"
+        placeholder="Contoh: 150"
+        required
+      />
+
+      <label for="animalPrice" id="priceLabel">
+        Harga semasa seekor (RM)
+      </label>
+      <p class="helper-text">
+        Anggaran harga semasa seekor haiwan yang digunakan untuk bayaran zakat.
+        (Opsyenal – jika diisi, kalkulator tunjuk nilai zakat dalam RM.)
+      </p>
+      <input
+        type="number"
+        id="animalPrice"
+        name="animalPrice"
+        min="0"
+        step="0.01"
+        placeholder="Contoh: 5000.00"
+      />
+
+      <button type="submit">Kira Zakat Ternakan</button>
+    </form>
+
+    <div id="livestockResult" class="result-box"></div>
+
+    <div class="nisab-info">
+      <strong>Ringkasan nisab asas & kadar minimum:</strong>
+      <ul>
+        <li>Kambing / Biri-biri: nisab 40 ekor → 1 ekor kambing sebagai zakat.</li>
+        <li>Lembu / Kerbau: nisab 30 ekor → 1 ekor lembu (umur 1 tahun) sebagai zakat.</li>
+        <li>Unta: nisab 5 ekor → 1 ekor kambing sebagai zakat.</li>
+      </ul>
+      <div style="font-size: 0.85rem; margin-top: 0.35rem;">
+        Kalkulator ini guna anggaran mudah: bilangan zakat ≈ floor(bilangan ternakan ÷ nisab).
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const form = document.getElementById("zakatTernakanForm");
+      const animalTypeSelect = document.getElementById("animalType");
+      const animalCountInput = document.getElementById("animalCount");
+      const animalPriceInput = document.getElementById("animalPrice");
+      const priceLabel = document.getElementById("priceLabel");
+      const resultBox = document.getElementById("livestockResult");
+
+      const config = {
+        kambing: {
+          label: "Kambing / Biri-biri",
+          nisab: 40,
+          zakatUnitLabel: "ekor kambing",
+          priceLabel: "Harga semasa seekor kambing (RM)",
+        },
+        lembu: {
+          label: "Lembu / Kerbau",
+          nisab: 30,
+          zakatUnitLabel: "ekor lembu",
+          priceLabel: "Harga semasa seekor lembu (RM)",
+        },
+        unta: {
+          label: "Unta",
+          nisab: 5,
+          zakatUnitLabel: "ekor kambing",
+          priceLabel:
+            "Harga semasa seekor kambing (RM) untuk bayaran zakat",
+        },
+      };
+
+      function updatePriceLabel() {
+        const type = animalTypeSelect.value;
+        priceLabel.textContent = config[type].priceLabel;
+      }
+
+      animalTypeSelect.addEventListener("change", updatePriceLabel);
+      updatePriceLabel(); // initial
+
+      form.addEventListener("submit", function (e) {
+        e.preventDefault();
+
+        const type = animalTypeSelect.value;
+        const settings = config[type];
+
+        const rawCount = animalCountInput.value.replace(/,/g, "");
+        const count = parseInt(rawCount, 10);
+
+        if (isNaN(count) || count <= 0) {
+          showResult(
+            "Sila masukkan bilangan ternakan yang sah (lebih daripada 0).",
+            "error"
+          );
+          return;
+        }
+
+        const nisab = settings.nisab;
+        const animalLabel = settings.label;
+
+        if (count < nisab) {
+          const msg =
+            "<div class='result-title'>Belum cukup nisab – tidak wajib zakat ternakan.</div>" +
+            "Jenis ternakan: <strong>" +
+            animalLabel +
+            "</strong><br>" +
+            "Bilangan ternakan: <strong>" +
+            count +
+            " ekor</strong><br>" +
+            "Nisab minimum untuk " +
+            animalLabel.toLowerCase() +
+            " ialah <strong>" +
+            nisab +
+            " ekor</strong>.<br><br>" +
+            "Oleh itu, zakat ternakan <strong>belum diwajibkan</strong> untuk ternakan ini.";
+          showResult(msg, "error");
+          return;
+        }
+
+        // Cukup nisab – guna anggaran mudah floor(count / nisab)
+        const zakatCount = Math.floor(count / nisab);
+
+        let msg =
+          "<div class='result-title'>Cukup nisab – zakat ternakan adalah wajib.</div>" +
+          "Jenis ternakan: <strong>" +
+          animalLabel +
+          "</strong><br>" +
+          "Bilangan ternakan: <strong>" +
+          count +
+          " ekor</strong><br>" +
+          "Nisab minimum: <strong>" +
+          nisab +
+          " ekor</strong><br><br>" +
+          "Bilangan zakat (anggaran mudah):<br>" +
+          "floor(" +
+          count +
+          " ÷ " +
+          nisab +
+          ") = <strong>" +
+          zakatCount +
+          " " +
+          settings.zakatUnitLabel +
+          "</strong> sebagai zakat.";
+
+        // Jika harga semasa diisi, kira nilai zakat dalam RM
+        const rawPrice = animalPriceInput.value.replace(/,/g, "");
+        const price = parseFloat(rawPrice);
+
+        if (!isNaN(price) && price > 0 && zakatCount > 0) {
+          const nilaiZakat = zakatCount * price;
+          msg +=
+            "<div class='result-amount' style='margin-top:0.8rem;'>" +
+            "Anggaran nilai zakat: " +
+            zakatCount +
+            " × RM " +
+            price.toLocaleString("ms-MY", {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            }) +
+            " = <br><strong>RM " +
+            nilaiZakat.toLocaleString("ms-MY", {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            }) +
+            "</strong></div>";
+        } else {
+          msg +=
+            "<div style='margin-top:0.6rem; font-size:0.9rem;'>" +
+            "Jika anda ingin melihat anggaran nilai RM, sila isi harga semasa seekor dalam ruangan di atas." +
+            "</div>";
+        }
+
+        showResult(msg, "success");
+      });
+
+      function showResult(html, type) {
+        resultBox.innerHTML = html;
+        resultBox.classList.remove("success", "error");
+        resultBox.classList.add(type);
+        resultBox.style.display = "block";
+      }
+    })();
+  </script>
+</body>
+</html>
