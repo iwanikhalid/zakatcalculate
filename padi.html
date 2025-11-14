@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8" />
+  <title>Kalkulator Zakat Tanaman Padi</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --primary: #145c3a;
+      --primary-soft: #e3f3ea;
+      --danger: #b32121;
+      --bg: #f5f5f5;
+      --text: #222;
+      --border-radius: 12px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      padding: 1.25rem;
+    }
+
+    .calculator-wrapper {
+      max-width: 600px;
+      margin: 0 auto;
+      background: #fff;
+      border-radius: var(--border-radius);
+      padding: 1.5rem 1.25rem;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.06);
+    }
+
+    @media (min-width: 640px) {
+      .calculator-wrapper {
+        padding: 2rem 2rem;
+      }
+    }
+
+    h1 {
+      font-size: 1.4rem;
+      margin: 0 0 0.75rem;
+      color: var(--primary);
+    }
+
+    .subtitle {
+      font-size: 0.95rem;
+      margin-bottom: 1.25rem;
+      color: #555;
+    }
+
+    label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 0.35rem;
+      font-size: 0.95rem;
+    }
+
+    .helper-text {
+      font-size: 0.85rem;
+      color: #666;
+      margin-bottom: 0.6rem;
+    }
+
+    .input-row {
+      display: flex;
+      align-items: stretch;
+      margin-bottom: 0.8rem;
+    }
+
+    .input-prefix {
+      padding: 0.6rem 0.9rem;
+      background: #0b4b80;
+      color: #fff;
+      font-size: 0.85rem;
+      font-weight: 700;
+      border-radius: 10px 0 0 10px;
+      display: flex;
+      align-items: center;
+      white-space: nowrap;
+    }
+
+    .input-prefix.green {
+      background: #22a13a;
+    }
+
+    .input-prefix.rm {
+      background: #0b4b80;
+    }
+
+    .input-prefix.kg {
+      background: #0b4b80;
+    }
+
+    .input-field {
+      flex: 1;
+    }
+
+    input[type="number"],
+    input[type="text"] {
+      width: 100%;
+      padding: 0.6rem 0.7rem;
+      border-radius: 0 10px 10px 0;
+      border: 1px solid #ccc;
+      border-left: none;
+      font-size: 1rem;
+      outline: none;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    input[type="number"]:focus,
+    input[type="text"]:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(20, 92, 58, 0.15);
+    }
+
+    button {
+      width: 100%;
+      margin-top: 0.4rem;
+      padding: 0.7rem;
+      border-radius: 999px;
+      border: none;
+      background: var(--primary);
+      color: #fff;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.08s ease, box-shadow 0.08s ease,
+        background 0.2s ease;
+    }
+
+    button:hover {
+      background: #0e4029;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+      transform: translateY(-1px);
+    }
+
+    button:active {
+      transform: translateY(0);
+      box-shadow: none;
+    }
+
+    .result-box {
+      margin-top: 1.4rem;
+      padding: 0.9rem 1rem;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      display: none;
+    }
+
+    .result-box.success {
+      background: #ecfdf3;
+      border: 1px solid #16a34a;
+      color: #166534;
+    }
+
+    .result-box.error {
+      background: #fef2f2;
+      border: 1px solid var(--danger);
+      color: #7f1d1d;
+    }
+
+    .result-title {
+      font-weight: 700;
+      margin-bottom: 0.3rem;
+    }
+
+    .result-amount {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-top: 0.4rem;
+    }
+
+    .nisab-info {
+      margin-top: 1.1rem;
+      background: var(--primary-soft);
+      border-radius: 10px;
+      padding: 0.8rem 0.9rem;
+      font-size: 0.9rem;
+      border-left: 4px solid var(--primary);
+    }
+
+    .final-output {
+      margin-top: 1.2rem;
+      display: none;
+    }
+
+    .final-output .input-row {
+      margin-bottom: 0;
+    }
+  </style>
+</head>
+<body>
+  <nav>
+  <a href="kripto.html">Kripto</a> |
+  <a href="ternakan.html">Ternakan</a> |
+  <a href="padi.html">Padi</a> 
+</nav>
+  <div class="calculator-wrapper">
+    <h1>Kalkulator Zakat Tanaman Padi</h1>
+    <p class="subtitle">
+      Zakat padi dikira pada <strong>hasil bersih</strong> yang mencapai nisab
+      <strong>1,306 kg</strong>, pada kadar <strong>5%</strong>.
+    </p>
+
+    <form id="zakatPadiForm">
+      <!-- Hasil bersih (KG) -->
+      <label for="hasilKg">Hasil bersih padi (kg)</label>
+      <p class="helper-text">
+        Jumlah berat padi yang dituai selepas ditolak rosak/buang. Nisab minimum ialah
+        <strong>1,306 kg</strong>.
+      </p>
+      <div class="input-row">
+        <div class="input-prefix kg">KG</div>
+        <div class="input-field">
+          <input
+            type="number"
+            id="hasilKg"
+            name="hasilKg"
+            min="0"
+            step="0.01"
+            placeholder="Contoh: 1306"
+            required
+          />
+        </div>
+      </div>
+
+      <!-- Harga jualan per kg -->
+      <label for="hargaKg">Harga jualan padi per kg (RM)</label>
+      <p class="helper-text">
+        Harga semasa jualan padi per kilogram.
+      </p>
+      <div class="input-row">
+        <div class="input-prefix rm">RM</div>
+        <div class="input-field">
+          <input
+            type="number"
+            id="hargaKg"
+            name="hargaKg"
+            min="0"
+            step="0.01"
+            placeholder="Contoh: 1.50"
+            required
+          />
+        </div>
+      </div>
+
+      <!-- Jumlah kos langsung -->
+      <label for="kosLangsung">Jumlah semua kos langsung (RM)</label>
+      <p class="helper-text">
+        Jumlah semua kos yang terlibat <strong>secara langsung</strong> dengan penghasilan padi,
+        seperti <em>cukai tanah, cukai tali air, sewa tanah, bayaran pawah tanah, baja,
+        kawalan perosak dan sebagainya</em>.
+      </p>
+      <div class="input-row">
+        <div class="input-prefix rm">RM</div>
+        <div class="input-field">
+          <input
+            type="number"
+            id="kosLangsung"
+            name="kosLangsung"
+            min="0"
+            step="0.01"
+            placeholder="Contoh: 500.00"
+            required
+          />
+        </div>
+      </div>
+
+      <button type="submit">Kira Zakat Padi</button>
+    </form>
+
+    <div id="padiResult" class="result-box"></div>
+
+    <!-- Final zakat output bar -->
+    <div class="final-output" id="finalZakatBar">
+      <div class="input-row">
+        <div class="input-prefix green">RM</div>
+        <div class="input-field">
+          <input
+            type="text"
+            id="finalZakatAmount"
+            readonly
+            style="border-radius: 0 10px 10px 0; border-left: none; font-weight:600;"
+          />
+        </div>
+      </div>
+      <p class="helper-text" style="margin-top:0.35rem;">
+        Jumlah anggaran zakat tanaman padi yang perlu dibayar.
+      </p>
+    </div>
+
+    <div class="nisab-info">
+      <strong>Ringkasan syarat:</strong><br />
+      1. Hasil bersih padi mesti mencapai <strong>1,306 kg</strong> atau lebih.<br />
+      2. Nilai bersih selepas tolak kos langsung mesti
+      <strong>sekadar atau melebihi</strong> nilai nisab minimum
+      (<code>1,306 kg × harga semasa/kg</code>).<br />
+      Jika dua-dua syarat dipenuhi, zakat dikira pada kadar
+      <strong>5% daripada nilai bersih</strong>.
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const NISAB_PADI_KG = 1306;
+
+      const form = document.getElementById("zakatPadiForm");
+      const hasilKgInput = document.getElementById("hasilKg");
+      const hargaKgInput = document.getElementById("hargaKg");
+      const kosLangsungInput = document.getElementById("kosLangsung");
+      const resultBox = document.getElementById("padiResult");
+      const finalBar = document.getElementById("finalZakatBar");
+      const finalAmountInput = document.getElementById("finalZakatAmount");
+
+      form.addEventListener("submit", function (e) {
+        e.preventDefault();
+
+        const hasilKg = parseFloat((hasilKgInput.value || "0").replace(/,/g, ""));
+        const hargaKg = parseFloat((hargaKgInput.value || "0").replace(/,/g, ""));
+        const kosLangsung = parseFloat(
+          (kosLangsungInput.value || "0").replace(/,/g, "")
+        );
+
+        if (isNaN(hasilKg) || hasilKg <= 0) {
+          showResult(
+            "Sila masukkan jumlah hasil bersih padi (kg) yang sah.",
+            "error"
+          );
+          finalBar.style.display = "none";
+          return;
+        }
+
+        if (isNaN(hargaKg) || hargaKg <= 0) {
+          showResult(
+            "Sila masukkan harga jualan padi per kg (RM) yang sah.",
+            "error"
+          );
+          finalBar.style.display = "none";
+          return;
+        }
+
+        if (isNaN(kosLangsung) || kosLangsung < 0) {
+          showResult(
+            "Sila masukkan jumlah kos langsung (RM) yang sah.",
+            "error"
+          );
+          finalBar.style.display = "none";
+          return;
+        }
+
+        // GATE 1 – Nisab KG
+        if (hasilKg < NISAB_PADI_KG) {
+          const msg =
+            "<div class='result-title'>Belum cukup nisab dari segi berat – tidak wajib zakat padi.</div>" +
+            "Hasil bersih padi: <strong>" +
+            hasilKg.toLocaleString("ms-MY", {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            }) +
+            " kg</strong><br>" +
+            "Nisab minimum ialah <strong>1,306 kg</strong>.<br><br>" +
+            "Oleh itu, zakat tanaman padi <strong>belum diwajibkan</strong>.";
+          showResult(msg, "error");
+          finalBar.style.display = "none";
+          return;
+        }
+
+        // Kiraan asas
+        const nilaiJualan = hasilKg * hargaKg;
+        const nilaiBersih = nilaiJualan - kosLangsung;
+        const nilaiNisabMin = NISAB_PADI_KG * hargaKg;
+
+        // Jika nilai bersih <= 0, memang tak ada zakat
+        if (nilaiBersih <= 0) {
+          const msg =
+            "<div class='result-title'>Hasil bersih selepas kos adalah sifar atau negatif – tidak wajib zakat.</div>" +
+            "Nilai jualan padi: <strong>RM " +
+            nilaiJualan.toLocaleString("ms-MY", {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            }) +
+            "</strong><br>" +
+            "Jumlah kos langsung: <strong>RM " +
+            kosLangsung.toLocaleString("ms-MY", {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            }) +
+            "</strong><br><br>" +
+            "Oleh kerana nilai bersih tidak positif, tiada zakat dikenakan.";
+          showResult(msg, "error");
+          finalBar.style.display = "none";
+          return;
+        }
+
+        // GATE 2 – Nilai bersih mesti ≥ nilai nisab minimum (1306 × harga semasa)
+        if (nilaiBersih < nilaiNisabMin) {
+          const msg =
+            "<div class='result-title'>Tidak cukup nisab dari segi nilai bersih – tidak wajib zakat.</div>" +
+            "Hasil bersih padi: <strong>" +
+            hasilKg.toLocaleString("ms-MY", {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            }) +
+            " kg</strong><br>" +
+            "Harga jualan per kg: <strong>RM " +
+            hargaKg.toLocaleString("ms-MY", {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            }) +
+            "</strong><br>" +
+            "Nilai jualan padi: <strong>RM " +
+            nilaiJualan.toLocaleString("ms-MY", {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            }) +
+            "</strong><br>" +
+            "Jumlah kos langsung: <strong>RM " +
+            kosLangsung.toLocaleString("ms-MY", {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            }) +
+            "</strong><br>" +
+            "Nilai bersih selepas kos: <strong>RM " +
+            nilaiBersih.toLocaleString("ms-MY", {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            }) +
+            "</strong><br><br>" +
+            "Nilai nisab minimum berdasarkan harga semasa ialah:<br>" +
+            "<strong>1,306 kg × RM " +
+            hargaKg.toLocaleString("ms-MY", {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            }) +
+            " = RM " +
+            nilaiNisabMin.toLocaleString("ms-MY", {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            }) +
+            "</strong><br><br>" +
+            "Oleh kerana nilai bersih ini masih di bawah paras tersebut, zakat padi <strong>tidak diwajibkan</strong>.";
+          showResult(msg, "error");
+          finalBar.style.display = "none";
+          return;
+        }
+
+        // Kedua-dua gate lepas → zakat wajib
+        const zakat = nilaiBersih * 0.05;
+
+        let msg =
+          "<div class='result-title'>Cukup nisab (kg & nilai bersih) – zakat tanaman padi adalah wajib.</div>" +
+          "Hasil bersih padi: <strong>" +
+          hasilKg.toLocaleString("ms-MY", {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          }) +
+          " kg</strong><br>" +
+          "Harga jualan per kg: <strong>RM " +
+          hargaKg.toLocaleString("ms-MY", {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          }) +
+          "</strong><br>" +
+          "Nilai jualan padi: <strong>RM " +
+          nilaiJualan.toLocaleString("ms-MY", {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          }) +
+          "</strong><br>" +
+          "Jumlah kos langsung: <strong>RM " +
+          kosLangsung.toLocaleString("ms-MY", {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          }) +
+          "</strong><br>" +
+          "Nilai bersih selepas kos: <strong>RM " +
+          nilaiBersih.toLocaleString("ms-MY", {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          }) +
+          "</strong><br><br>" +
+          "Nilai nisab minimum (1,306 kg × harga semasa): <strong>RM " +
+          nilaiNisabMin.toLocaleString("ms-MY", {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          }) +
+          "</strong><br>" +
+          "Nilai bersih anda berada di atas paras ini, maka zakat dikira pada kadar <strong>5%</strong>.";
+
+        msg +=
+          "<div class='result-amount'>Jumlah zakat padi: <strong>RM " +
+          zakat.toLocaleString("ms-MY", {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          }) +
+          "</strong></div>";
+
+        showResult(msg, "success");
+
+        // Show final bar
+        finalAmountInput.value = zakat.toLocaleString("ms-MY", {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        });
+        finalBar.style.display = "block";
+      });
+
+      function showResult(html, type) {
+        resultBox.innerHTML = html;
+        resultBox.classList.remove("success", "error");
+        resultBox.classList.add(type);
+        resultBox.style.display = "block";
+      }
+    })();
+  </script>
+</body>
+</html>
