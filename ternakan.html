@@ -218,7 +218,7 @@
         <li>Unta: nisab 5 ekor → 1 ekor kambing sebagai zakat.</li>
       </ul>
       <div style="font-size: 0.85rem; margin-top: 0.35rem;">
-        Kalkulator ini guna anggaran mudah: bilangan zakat ≈ floor(bilangan ternakan ÷ nisab).
+        Kalkulator ini guna anggaran bundarkan untuk bilangan zakat
       </div>
     </div>
 
@@ -320,12 +320,8 @@
           "Nisab minimum: <strong>" +
           nisab +
           " ekor</strong><br><br>" +
-          "Bilangan zakat (anggaran mudah):<br>" +
-          "floor(" +
-          count +
-          " ÷ " +
-          nisab +
-          ") = <strong>" +
+          "Bilangan zakat bundar:<br>" +
+          "<strong>" +
           zakatCount +
           " " +
           settings.zakatUnitLabel +
