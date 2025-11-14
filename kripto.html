@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8" />
+  <title>Kalkulator Zakat Kripto</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --primary: #145c3a;
+      --primary-soft: #e3f3ea;
+      --danger: #b32121;
+      --bg: #f5f5f5;
+      --text: #222;
+      --border-radius: 12px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      padding: 1.25rem;
+    }
+
+    .calculator-wrapper {
+      max-width: 600px;
+      margin: 0 auto;
+      background: #fff;
+      border-radius: var(--border-radius);
+      padding: 1.5rem 1.25rem;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.06);
+    }
+
+    @media (min-width: 640px) {
+      .calculator-wrapper {
+        padding: 2rem 2rem;
+      }
+    }
+
+    h1 {
+      font-size: 1.4rem;
+      margin: 0 0 0.75rem;
+      color: var(--primary);
+    }
+
+    .subtitle {
+      font-size: 0.95rem;
+      margin-bottom: 1.25rem;
+      color: #555;
+    }
+
+    .nisab-box {
+      background: var(--primary-soft);
+      border-left: 4px solid var(--primary);
+      padding: 0.75rem 0.9rem;
+      margin-bottom: 1.5rem;
+      border-radius: 8px;
+      font-size: 0.95rem;
+    }
+
+    .nisab-box strong {
+      color: var(--primary);
+    }
+
+    label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 0.4rem;
+      font-size: 0.95rem;
+    }
+
+    .helper-text {
+      font-size: 0.85rem;
+      color: #666;
+      margin-bottom: 0.5rem;
+    }
+
+    input[type="number"] {
+      width: 100%;
+      padding: 0.6rem 0.7rem;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 1rem;
+      outline: none;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    input[type="number"]:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(20, 92, 58, 0.15);
+    }
+
+    button {
+      width: 100%;
+      margin-top: 0.9rem;
+      padding: 0.7rem;
+      border-radius: 999px;
+      border: none;
+      background: var(--primary);
+      color: #fff;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.08s ease, box-shadow 0.08s ease,
+        background 0.2s ease;
+    }
+
+    button:hover {
+      background: #0e4029;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+      transform: translateY(-1px);
+    }
+
+    button:active {
+      transform: translateY(0);
+      box-shadow: none;
+    }
+
+    .result-box {
+      margin-top: 1.4rem;
+      padding: 0.8rem 0.9rem;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      display: none;
+    }
+
+    .result-box.success {
+      background: #ecfdf3;
+      border: 1px solid #16a34a;
+      color: #166534;
+    }
+
+    .result-box.error {
+      background: #fef2f2;
+      border: 1px solid var(--danger);
+      color: #7f1d1d;
+    }
+
+    .result-title {
+      font-weight: 700;
+      margin-bottom: 0.25rem;
+    }
+
+    .result-amount {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-top: 0.25rem;
+    }
+
+    details {
+      margin-top: 1rem;
+      background: #fafafa;
+      border-radius: 10px;
+      padding: 0.6rem 0.7rem;
+      border: 1px dashed #d4d4d4;
+      font-size: 0.9rem;
+    }
+
+    summary {
+      cursor: pointer;
+      font-weight: 600;
+      color: #444;
+      list-style: none;
+    }
+
+    summary::-webkit-details-marker {
+      display: none;
+    }
+
+    summary::before {
+      content: "➕ ";
+      font-size: 0.8rem;
+    }
+
+    details[open] summary::before {
+      content: "➖ ";
+    }
+
+    .formula-highlight {
+      font-family: "Courier New", monospace;
+      background: #111827;
+      color: #f9fafb;
+      display: inline-block;
+      padding: 0.2rem 0.4rem;
+      border-radius: 4px;
+      margin: 0.25rem 0;
+      font-size: 0.85rem;
+    }
+  </style>
+</head>
+<body>
+<nav>
+  <a href="kripto.html">Kripto</a> |
+  <a href="ternakan.html>Ternakan</a> |
+  <a href="padi.html">Padi</a> 
+</nav>
+  <div class="calculator-wrapper">
+    <h1>Kalkulator Zakat Kripto</h1>
+    <p class="subtitle">
+      Formula asas: <strong>Jumlah Keseluruhan Mata Wang Kripto × 2.5%</strong>
+      = <strong>Jumlah Zakat</strong>
+    </p>
+
+    <div class="nisab-box">
+      <div><strong>Jumlah Nisab (Julai – Disember 2025)</strong></div>
+      <div>RM <strong id="nisabDisplay">35,449.00</strong></div>
+      <div style="font-size: 0.85rem; margin-top: 0.2rem;">
+        Zakat kripto hanya wajib jika jumlah keseluruhan kripto mencapai atau
+        melebihi nilai nisab ini.
+      </div>
+    </div>
+
+    <form id="zakatForm">
+      <label for="totalCrypto">
+        Jumlah Keseluruhan Mata Wang Kripto (RM)
+      </label>
+      <p class="helper-text">
+        <strong>Cara kira jumlah keseluruhan:</strong><br />
+        Unit mata wang kripto dan aset digital × harga semasa (hujung haul),
+        kemudian <strong>jumlahkan semua</strong>.
+      </p>
+      <input
+        type="number"
+        id="totalCrypto"
+        name="totalCrypto"
+        min="0"
+        step="0.01"
+        placeholder="Contoh: 50000.00"
+        required
+      />
+
+      <button type="submit">Kira Zakat Kripto</button>
+
+      <details>
+        <summary>Input helper: cara pecahkan ikut setiap mata wang kripto</summary>
+        <p style="margin-top: 0.5rem;">
+          Gunakan formula:
+          <span class="formula-highlight">
+            Unit mata wang kripto × harga semasa (hujung haul)
+          </span>
+        </p>
+        <p>
+          Contoh:
+        </p>
+        <ul style="margin-top: 0; padding-left: 1.1rem;">
+          <li>
+            BTC: 0.3 unit × RM 150,000 = RM 45,000
+          </li>
+          <li>
+            ETH: 2 unit × RM 10,000 = RM 20,000
+          </li>
+          <li>
+            Lain-lain aset digital = RM 3,000
+          </li>
+        </ul>
+        <p>
+          Jumlah keseluruhan = RM 45,000 + RM 20,000 + RM 3,000 =
+          <strong>RM 68,000</strong> (masukkan nilai ini dalam kotak di atas).
+        </p>
+      </details>
+    </form>
+
+    <div id="resultBox" class="result-box"></div>
+  </div>
+
+  <script>
+    (function () {
+      // Tetapan nisab (boleh diubah jika perlu pada masa depan)
+      const NISAB = 35449;
+
+      const form = document.getElementById("zakatForm");
+      const totalInput = document.getElementById("totalCrypto");
+      const resultBox = document.getElementById("resultBox");
+      const nisabDisplay = document.getElementById("nisabDisplay");
+
+      // Papar nisab dengan format 2 tempat perpuluhan
+      nisabDisplay.textContent = NISAB.toLocaleString("ms-MY", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      });
+
+      form.addEventListener("submit", function (e) {
+        e.preventDefault();
+
+        // Baca nilai dan buang koma (jika ada)
+        const rawValue = totalInput.value.replace(/,/g, "");
+        const total = parseFloat(rawValue);
+
+        if (isNaN(total) || total <= 0) {
+          showResult(
+            "Sila masukkan jumlah keseluruhan mata wang kripto yang sah.",
+            "error"
+          );
+          return;
+        }
+
+        if (total < NISAB) {
+          const message =
+            "Jumlah keseluruhan mata wang kripto anda ialah RM " +
+            total.toLocaleString("ms-MY", {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            }) +
+            ", iaitu <strong>kurang</strong> daripada nisab semasa (RM " +
+            NISAB.toLocaleString("ms-MY", {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            }) +
+            ").<br><br>" +
+            "<strong>Tidak wajib zakat</strong> kerana belum mencapai nisab.";
+          showResult(message, "error");
+        } else {
+          const zakat = total * 0.025;
+          const message =
+            "<div class='result-title'>Zakat kripto adalah wajib.</div>" +
+            "Jumlah keseluruhan kripto anda melebihi nisab semasa.<br><br>" +
+            "Formula: RM " +
+            total.toLocaleString("ms-MY", {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            }) +
+            " × 2.5%<br>" +
+            "<div class='result-amount'>Jumlah Zakat: RM " +
+            zakat.toLocaleString("ms-MY", {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            }) +
+            "</div>";
+          showResult(message, "success");
+        }
+      });
+
+      function showResult(html, type) {
+        resultBox.innerHTML = html;
+        resultBox.classList.remove("success", "error");
+        resultBox.classList.add(type);
+        resultBox.style.display = "block";
+      }
+    })();
+  </script>
+</body>
+</html>
